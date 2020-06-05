@@ -79,6 +79,7 @@ We also need to connect to the same server, but with RDP, so we can copy `JohnDo
 ``` ./fly JohnDoeServicing-AD-80.txt```
 
 ![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m1.png "Initial connection to HTTP")
+
 Here we see that the initial connection has been made, with a PID of 17588. Let's now connect to the RDP port of 3389:
 
 ``` ./fly JohnDoeServicing-AD-3389.txt```
