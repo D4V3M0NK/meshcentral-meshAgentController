@@ -78,12 +78,12 @@ We also need to connect to the same server, but with RDP, so we can copy `JohnDo
 
 ``` ./fly JohnDoeServicing-AD-80.txt```
 
-!(https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m1.png "Initial connection to HTTP")
+![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m1.png "Initial connection to HTTP")
 Here we see that the initial connection has been made, with a PID of 17588. Let's now connect to the RDP port of 3389:
 
 ``` ./fly JohnDoeServicing-AD-3389.txt```
 
-!(https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m2.png "Connection to HTTP and RDP")
+![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m2.png "Connection to HTTP and RDP")
 
 The second connection has been made, with a PID of 17610, and we can see that we still have our previous HTTP connection still open.
 
@@ -91,13 +91,13 @@ Now let's disconnect from our RDP connection. From the list we can see that we'r
 
 ``` ./land 17610```
 
-!(https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m3.png "Disconnect from RDP")
+![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m3.png "Disconnect from RDP")
 
 We're back to a single connection. Let's close those connection down too:
 
 ``` ./land 17588```
 
-!(https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m4.png "No more connections")
+![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m4.png "No more connections")
 
 No more connections.
 
