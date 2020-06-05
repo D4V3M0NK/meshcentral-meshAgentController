@@ -59,7 +59,7 @@ Assume the following file for an HTTP connection to an example remote server:
 ######Connect
 ``` fly JohnDoeServicing-AD-80.txt```
 
-
+![alt](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m1.png "Initial connect")
 
 
 Please don't shoot me for the rather poor code, I appreciate that I should assign variables using $() and not backticks, I'll get to that
