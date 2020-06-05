@@ -1,0 +1,70 @@
+#!/bin/bash
+DIR="$(pwd)"
+connectionFile=_connFile.txt
+pidfile=.pidfile
+
+localPort=`jq '.localPort' $1`
+remoteName=`jq '.remoteName' $1`
+remotePort=`jq '.remotePort' $1`
+password=`jq '.password' $1`
+username=`jq '.username' $1`
+
+# remove leading and trailing quotes from variable and ascertain if an infile password is being used
+password="${password%\"}"
+password="${password#\"}"
+
+if [[ -z ${password} ]]; then
+    inFilePassword=0
+    # request password from command line
+    read -s -p "Please supply password for ${username} : " password
+    echo ""
+else 
+    inFilePassword=1
+fi
+
+
+
+if [[ "${inFilePassword}" > 0 ]]; then
+    # run the meshcmd using infile password, in the background and get its PID
+    "${DIR}/meshcmd" --actionfile $1 &
+    echo $! > ${pidfile}
+    pid=`cat ${pidfile}`
+    rm ${pidfile}
+else
+    # run the meshcmd using command line password, in the background and get its PID
+    "${DIR}/meshcmd" --actionfile $1 --password ${password} &
+    echo $! > ${pidfile}
+    pid=`cat ${pidfile}`
+    rm ${pidfile}
+    
+fi
+
+if ! [[ -f ${connectionFile} ]]; then
+    echo "============================================================" > ${connectionFile}
+    echo "  PID   :  Local  :  Connection Details " >> ${connectionFile}
+    echo "============================================================" >> ${connectionFile}
+    echo " ${pid}  :  ${localPort}  :  ${remoteName} (${remotePort})" >> ${connectionFile}
+    echo "" >> ${connectionFile}
+    echo "" >> ${connectionFile}
+    echo -e "\tPlease use \"land ${PID}\" to stop a connection as it updates this file" >> ${connectionFile}
+else
+    # get the header
+    line1=`head -n3 ${connectionFile}`
+
+    #get the rest of the file
+    existing=`tail -n +4 ${connectionFile}`
+
+    # echo out the header
+    echo "${line1}" > ${connectionFile}
+    
+    # add this (latest) entry
+    echo " ${pid}  :  ${localPort}  :  ${remoteName} (${remotePort})" >> ${connectionFile}
+
+    # append the rest of the entries
+    echo "${existing}" >> ${connectionFile}
+fi
+
+
+more ${connectionFile}
+echo ""
+echo ""

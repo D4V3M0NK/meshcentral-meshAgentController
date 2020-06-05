@@ -1,0 +1,33 @@
+#!/bin/bash
+DIR="$(pwd)"
+connectionFile=_connFile.txt
+
+if [[ ${1} = "all" ]]; then
+    echo "Landing all connections"
+    for p in `pgrep meshcmd | awk '{print $1}'`; do       # using pgrep prevents "grep --color=auto meshcmd" showing in results
+        echo "Stopping ${p}"
+        kill ${p}
+    done
+
+    rm ${connectionFile}
+    exit
+fi
+
+
+
+
+kill $1
+if [[ $? -eq 0 ]]; then
+    sed -i '/^ '$1'/d' ${connectionFile}
+fi
+
+# get line count from connection file, splitting result by spaces (-d ' ') and returning 1st field (-f1)
+lines=`wc -l ${connectionFile} | cut -d ' ' -f1`
+if [[ ${lines} -lt 7 ]]; then
+    rm ${connectionFile}
+    echo -e "\n\tNo more connections\n\n"
+else
+    more ${connectionFile}
+    echo ""
+    echo ""
+fi
