@@ -2,12 +2,25 @@
 DIR="$(pwd)"
 connectionFile=_connFile.txt
 pidfile=.pidfile
+connectionsFolder=Connections
 
-localPort=`jq '.localPort' $1`
-remoteName=`jq '.remoteName' $1`
-remotePort=`jq '.remotePort' $1`
-password=`jq '.password' $1`
-username=`jq '.username' $1`
+if [[ -f ${1} ]]; then
+    sourceFile=${1}
+else
+    if [[ -f ./${connectionsFolder}/${1} ]]; then
+        sourceFile=./${connectionsFolder}/${1}
+    else
+        echo "Unable to find connection file : ${1}"
+        echo "(Terminating)"
+        exit;
+    fi
+fi
+
+localPort=$(jq '.localPort' ${sourceFile})
+remoteName=$(jq '.remoteName' ${sourceFile})
+remotePort=$(jq '.remotePort' ${sourceFile})
+password=$(jq '.password' ${sourceFile})
+username=$(jq '.username' ${sourceFile})
 
 # remove leading and trailing quotes from variable and ascertain if an infile password is being used
 password="${password%\"}"
@@ -26,13 +39,13 @@ fi
 
 if [[ "${inFilePassword}" > 0 ]]; then
     # run the meshcmd using infile password, in the background and get its PID
-    "${DIR}/meshcmd" --actionfile $1 &
+    "${DIR}/meshcmd" --actionfile ${sourceFile} &
     echo $! > ${pidfile}
     pid=`cat ${pidfile}`
     rm ${pidfile}
 else
     # run the meshcmd using command line password, in the background and get its PID
-    "${DIR}/meshcmd" --actionfile $1 --password ${password} &
+    "${DIR}/meshcmd" --actionfile ${sourceFile} --password ${password} &
     echo $! > ${pidfile}
     pid=`cat ${pidfile}`
     rm ${pidfile}
@@ -46,7 +59,7 @@ if ! [[ -f ${connectionFile} ]]; then
     echo " ${pid}  :  ${localPort}  :  ${remoteName} (${remotePort})" >> ${connectionFile}
     echo "" >> ${connectionFile}
     echo "" >> ${connectionFile}
-    echo -e "\tPlease use \"land ${PID}\" to stop a connection as it updates this file" >> ${connectionFile}
+    echo -e "\tPlease use \"land ${pid}\" to stop a connection as it updates this file" >> ${connectionFile}
 else
     # get the header
     line1=`head -n3 ${connectionFile}`

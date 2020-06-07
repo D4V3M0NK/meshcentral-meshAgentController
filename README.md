@@ -6,9 +6,14 @@ Every host on a MeshCentral system has a `meshaction.txt` file that's assigned t
 
 There needs to be a separate connection file for each host/port combination that you want access to. Additionally, each connection file will use a unique local port.
 
+## Latest changes
+- Ability to place connection files in their own folder
+
 ## Suggested Approach
-1. Create a specific folder that will contain all your connection files. For simplicity, also place the `meshcmd` executable into this same folder.
-1. Download the `meshaction.txt` file for that _specific_ host into the same folder. Each host within MeshCentral uses a specific ID that's listed in its `meshaction.txt` file, so you can't use one and expect it to work for other hosts. However, that being said, you _can_ use the same file and edit it slightly to connect to the same remote host, just on a different port (see below).
+1. Create a specific folder that will contain all your connection files. ~~For simplicity, also place the `meshcmd` executable into this same folder.~~
+1. Download the `meshaction.txt` file for that _specific_ host and place it into the folder that will contain all your connection files
+   1. Each host within MeshCentral uses a specific ID that's listed in its `meshaction.txt` file, so you can't use one and expect it to work for other hosts. 
+   1. That being said, you _can_ use the same file and edit it slightly to connect to the same remote host, just on a different port (see below).
 1. Edit the downloaded meshaction.txt as per the changes shown below:
     ```
     {
