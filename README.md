@@ -8,6 +8,7 @@ There needs to be a separate connection file for each host/port combination that
 
 ## Latest changes
 - Ability to place connection files in their own folder
+- Process check when using `land`
 
 ## Suggested Approach
 1. Create a specific folder that will contain all your connection files. ~~For simplicity, also place the `meshcmd` executable into this same folder.~~

@@ -2,7 +2,8 @@
 DIR="$(pwd)"
 connectionFile=_connFile.txt
 
-if [[ ${1} = "all" ]]; then
+if [[ "$1" = "all" ]]; then
+
     echo "Landing all connections"
     for p in `pgrep meshcmd | awk '{print $1}'`; do       # using pgrep prevents "grep --color=auto meshcmd" showing in results
         echo "Stopping ${p}"
@@ -14,18 +15,23 @@ if [[ ${1} = "all" ]]; then
 fi
 
 
+# Check that the process requested exists and is a meshcmd process (prevents terminating a valid process that's not meshcmd)
+processCheck=$(pgrep meshcmd | grep $1)
+if [[ ${processCheck} -ne $1 ]]; then
+    more ${connectionFile}
+    echo -e "\nProcess $1 is not a meshcmd process, therefore not terminating\n\n"
+    exit;
+fi
 
 
 kill $1
-if [[ $? -eq 0 ]]; then
-    sed -i '/^ '$1'/d' ${connectionFile}
-fi
+sed -i "/$1/d" ${connectionFile}
 
 # get line count from connection file, splitting result by spaces (-d ' ') and returning 1st field (-f1)
 lines=`wc -l ${connectionFile} | cut -d ' ' -f1`
-if [[ ${lines} -lt 7 ]]; then
+if [[ ${lines} -lt 8 ]]; then
     rm ${connectionFile}
-    echo -e "\n\tNo more connections\n\n"
+    echo -e "\n\tNo more meshcmd connections\n\n"
 else
     more ${connectionFile}
     echo ""

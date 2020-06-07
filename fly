@@ -4,14 +4,20 @@ connectionFile=_connFile.txt
 pidfile=.pidfile
 connectionsFolder=Connections
 
+// check that meshcmd is present
+if [[ ! -f ./meshcmd ]]; then
+    echo -e "\nCan't find meshcmd\n\n"
+    exit 1;
+fi
+
 if [[ -f ${1} ]]; then
     sourceFile=${1}
 else
     if [[ -f ./${connectionsFolder}/${1} ]]; then
         sourceFile=./${connectionsFolder}/${1}
     else
-        echo "Unable to find connection file : ${1}"
-        echo "(Terminating)"
+        more ${connectionFile}
+        echo -e "\nUnable to find connection file : ${1}\n"
         exit;
     fi
 fi
@@ -59,7 +65,8 @@ if ! [[ -f ${connectionFile} ]]; then
     echo " ${pid}  :  ${localPort}  :  ${remoteName} (${remotePort})" >> ${connectionFile}
     echo "" >> ${connectionFile}
     echo "" >> ${connectionFile}
-    echo -e "\tPlease use \"land ${pid}\" to stop a connection as it updates this file" >> ${connectionFile}
+    echo -e "\tUse \"land PID#\" to stop a connection" >> ${connectionFile}
+    echo -e "\tUse \"land all\" to stop all connections" >> ${connectionFile}
 else
     # get the header
     line1=`head -n3 ${connectionFile}`
