@@ -25,12 +25,8 @@ fi
 localPort=$(jq '.localPort' ${sourceFile})
 remoteName=$(jq '.remoteName' ${sourceFile})
 remotePort=$(jq '.remotePort' ${sourceFile})
-password=$(jq '.password' ${sourceFile})
+password=$(jq -r '.password' ${sourceFile})
 username=$(jq '.username' ${sourceFile})
-
-# remove leading and trailing quotes from variable and ascertain if an infile password is being used
-password="${password%\"}"
-password="${password#\"}"
 
 if [[ -z ${password} ]]; then
     inFilePassword=0
