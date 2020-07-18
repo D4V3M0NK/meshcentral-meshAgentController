@@ -27,9 +27,26 @@ There needs to be a separate connection file for each host/port combination that
         "password": "YOUR_MESHCENTRAL_PASSWORD",
     }
     ```
-1. **NOTE1**: the password is optional at this point - if it's not provided the script below will prompt you for it before connecting. There are obvious security issues with either approach:
-    1. Having the password in the .txt file makes it visible to anyone who has access to that file.
-    1. Providing the password at the point of running the command will make that password visible by anyone running `ps -ef | grep meshcmd`
+1. Explanation of changes:
+   1. `localPort`
+      1. the port that runs locally on your system that you'll point an application to, in order to route to a remote server. 
+      1. takes an integer value, without surrounding quotes.
+   1. `remotePort`
+      1. the port on the remote server that you want to (ultimately) connect to.
+      1. takes an integer value, without surrounding quotes.
+   1. `remoteName`
+      1. a description that will be shown on the review screen of the connection.
+      1. takes a string value within surrounding quotes.
+         1. eg "Customer ABC - Web server - MySQL connection"
+   1. `username`
+      1. your username used to log into the MeshCentral server.
+      1. takes a string value within surrounding quotes.
+   1. `password` 
+      1. your password used to log into the MeshCentral server.
+      1. takes a string value within surrounding quotes.
+      1. **Please note**: the password is optional at this point - if it's not provided the script below will prompt you for it before connecting. There are obvious security issues with either approach:
+         1. Having the password in the .txt file makes it visible to anyone who has access to that file.
+         1. Providing the password at the point of running the command will make that password visible by anyone running `ps -ef | grep meshcmd`
 1. Save the edited `meshaction.txt` as a different filename, **not** `meshaction.txt` (I use `Customer-Server-Port.txt`).
 1. **NOTE2**: for different connections to the same host, you can now use the edited file as a template and just change the localPort, remotePort and remoteName (everything else stays the same)
 1. Use the attached `fly` and `land` scripts to connect and disconnect.
