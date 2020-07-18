@@ -105,7 +105,7 @@ __`mfa`__ (optional, default = 0)
     
 `mfa` takes an integer value and relates whether (`mfa=1`) or not (`mfa=0`) multi-factor authentication is enabled on the MeshCentral server. If set, `fly` will prompt the user for their MFA pin number in order to connect to MeshCentral and (ultimately) to the remote device. 
 
-__Note__ : At the moment this is a global setting for MARC, irrespective of whether or not the user listed in the connection file has MFA enabled. If you have connection files for different users and some of those users have MFA enabled within MC2 and others haven't, it's best to set MARC's `mfa` setting to `1`: this means that it will prompt everyone for a PIN number, but MC2 users that aren't set up with MFA can enter any number, they'll be authenticated upon their username and password alone.
+__Note__ : At the moment this is a global setting for MARC, irrespective of whether or not the user listed in the connection file has MFA enabled. If you have connection files for different users and some of those users have MFA enabled within MC2 and others haven't, it's best to set MARC's `mfa` setting to `1`: this means that it will prompt everyone for a PIN number, MC2 users that aren't set up with MFA can enter any number, they'll be authenticated upon their username and password alone.
 
 ---
 
