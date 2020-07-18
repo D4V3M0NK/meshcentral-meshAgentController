@@ -7,7 +7,7 @@
 # connectionsFolder pathToFolder
 #   can be set to an alternative folder that contains all individual remote server's meshaction files
 #   eg. connectionsFolder=/path/to/meshactionFiles
-connectionsFolder=Connections
+connectionsFolder=
 
 # mfa [ 0 | 1 ]
 #   if your MeshCentral user has multi-factor authentication enabled, set to 1

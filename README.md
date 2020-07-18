@@ -7,6 +7,8 @@ Every host on a MeshCentral system has a `meshaction.txt` file that's assigned t
 There needs to be a separate connection file for each host/port combination that you want access to. Additionally, each connection file will use a unique local port.
 
 ## Latest changes
+- Added MFA capability 
+## Prior changes
 - Ability to place connection files in their own folder
 - Process check when using `land`
 
@@ -25,20 +27,22 @@ There needs to be a separate connection file for each host/port combination that
         "password": "YOUR_MESHCENTRAL_PASSWORD",
     }
     ```
-1. **NOTE1**: the password is optional at this point - if it's not provided the script below will prompt you for it before connecting.
+1. **NOTE1**: the password is optional at this point - if it's not provided the script below will prompt you for it before connecting. There are obvious security issues with either approach:
+    1. Having the password in the .txt file makes it visible to anyone who has access to that file.
+    1. Providing the password at the point of running the command will make that password visible by anyone running `ps -ef | grep meshcmd`
 1. Save the edited `meshaction.txt` as a different filename, **not** `meshaction.txt` (I use `Customer-Server-Port.txt`).
 1. **NOTE2**: for different connections to the same host, you can now use the edited file as a template and just change the localPort, remotePort and remoteName (everything else stays the same)
 1. Use the attached `fly` and `land` scripts to connect and disconnect.
 
 ### Using the `fly` script
-Usage: ``` fly connectionFile.txt```
+Usage: ` fly connectionFile.txt`
 
 The `fly` script (which can be renamed to anything you choose!) is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
 
 ### Using the `land` script
-Usage: ``` land PIDNumber```
+Usage: ` land [ all | PIDNumber ]`
 
- The `land` script is used to disconnect from a remote server.
+ The `land` script is used to disconnect from a remote server. If supplied with the `all` parameter, then all connections to all remote servers will be terminated. If a `PIDNumber` is supplied, then the connection to the specific server associated with that process ID will be terminated.
 
 ## Example
 
