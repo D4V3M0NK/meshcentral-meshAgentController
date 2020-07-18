@@ -48,7 +48,7 @@ There needs to be a separate connection file for each host/port combination that
          1. Having the password in the .txt file makes it visible to anyone who has access to that file.
          1. Providing the password at the point of running the command will make that password visible by anyone running `ps -ef | grep meshcmd`
 1. Save the edited `meshaction.txt` as a different filename, **not** `meshaction.txt` (I use `Customer-Server-Port.txt`).
-   1. **Note 2**: for different connections to the same host, you can now use the edited file as a template and just change the `localPort`, `remotePort` and `remoteName` (everything else stays the same)
+   1. **Note 2**: for different connections to the _**same**_ host, you can now use the edited file as a template and just change the `localPort`, `remotePort` and `remoteName` (everything else stays the same)
 1. Use the attached `fly` and `land` scripts to connect and disconnect.
 
 ### Using the `fly` script
