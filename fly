@@ -1,10 +1,29 @@
 #!/bin/bash
-DIR="$(pwd)"
-connectionFile=_connFile.txt
-pidfile=.pidfile
+
+
+###################
+##### OPTIONS #####
+###################
+# connectionsFolder pathToFolder
+#   can be set to an alternative folder that contains all individual remote server's meshaction files
+#   eg. connectionsFolder=/path/to/meshactionFiles
 connectionsFolder=Connections
 
-// check that meshcmd is present
+# mfa [ 0 | 1 ]
+#   if your MeshCentral user has multi-factor authentication enabled, set to 1
+mfa=0
+
+
+
+##### DO NOT EDIT ANYTHING BELOW THIS LINE #####
+set -e
+
+DIR="$(pwd)"
+connectionFile=.connFile.txt
+pidfile=.pidfile
+
+
+# check that meshcmd is present
 if [[ ! -f ./meshcmd ]]; then
     echo -e "\nCan't find meshcmd\n\n"
     exit 1;
@@ -38,21 +57,33 @@ else
 fi
 
 
-
-if [[ "${inFilePassword}" > 0 ]]; then
-    # run the meshcmd using infile password, in the background and get its PID
-    "${DIR}/meshcmd" --actionfile ${sourceFile} &
-    echo $! > ${pidfile}
-    pid=`cat ${pidfile}`
-    rm ${pidfile}
-else
-    # run the meshcmd using command line password, in the background and get its PID
-    "${DIR}/meshcmd" --actionfile ${sourceFile} --password ${password} &
-    echo $! > ${pidfile}
-    pid=`cat ${pidfile}`
-    rm ${pidfile}
-    
+if [[ ${mfa} -eq 1 ]]; then
+    read -p "Please enter MultiFactor Authentication PIN : " token
+    echo ""
 fi
+
+
+cmd="./meshcmd"
+
+cmd="$cmd --actionfile ${sourceFile}"
+
+if [[ ${inFilePassword} -eq 0 ]]; then
+    cmd="$cmd --password ${password}"
+fi
+if [[ ${mfa} -eq 1 ]]; then
+    cmd="$cmd --token ${token}"
+fi
+
+cmd="$cmd &"
+
+echo -e "\n\n------------- DEBUGGING ----------------------"
+echo ${cmd}
+echo -e "------------- DEBUGGING ----------------------\n\n"
+
+
+bash -c "${cmd}"
+
+pid=$(ps -ef | grep "${cmd}" | awk '{print $2}')
 
 if ! [[ -f ${connectionFile} ]]; then
     echo "============================================================" > ${connectionFile}

@@ -1,6 +1,14 @@
 #!/bin/bash
 DIR="$(pwd)"
-connectionFile=_connFile.txt
+connectionFile=.connFile.txt
+
+if [[ ! -f ${connectionFile} ]]; then
+    echo -e "\n\n\tNo monitored connections are running"
+    echo -e "\tIf you believe this to be incorrect, then try the following:"
+    echo -e "\t\tps -ef | grep meshcmd"
+    echo -e "\n\n"
+    exit 1
+fi
 
 if [[ "$1" = "all" ]]; then
 
