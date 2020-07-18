@@ -5,6 +5,7 @@ The MeshAgent Router Controller ("MARC") is to be used in conjunction with the r
 - MeshCentral 2.0 ("MC2") up and running
 - meshcmd (available from the MC2 interface)
 - meshaction.txt files (available from the MC2 interface)
+- [jq](https://stedolan.github.io/jq/) (`apt install -y jq`)
 
 ##### meshcmd
 Known as the MeshCentral Router ([user guide](http://info.meshcentral.com/downloads/MeshCentral2/MeshCentral2RouterUserGuide-0.0.2.pdf)), the `meshcmd` utility is downloaded from the MeshCentral server, a link for which is included with every device that's listed on the server.  
@@ -15,6 +16,9 @@ MARC is designed to work exclusively with the Linux command line utility: the Wi
 Every device configured to work with a MeshCentral server has an associated `meshaction.txt` file and it's that file, along with the `meshcmd` utility, that will permit you to set up local ports on your workstation that will route traffic through to the remote device. Both the `meshaction.txt` and the `meshcmd` files are downloadable through the MeshCentral web server, but once downloaded, you don't need to log into the web server for various tasks, they can all be managed through the router and MARC.
 
 For each remote device/port combination, there needs to be a separate connection file which will be configured to use a unique local port on your workstation in order for you to access that remote device. This is explained below.
+
+##### jq
+Wonderfully powerful utility that enables command line utilities to parse JSON files.
 
 ## Latest changes
 - Added MFA capability 
