@@ -1,10 +1,10 @@
 # MeshAgent Controller
-This project is to be used in conjunction with the rather excellent [MeshCentral](https://github.com/Ylianst/MeshCentral) project and is designed to be a simple management BASH script to manage connections to remote systems.
+This project is to be used in conjunction with the rather excellent [MeshCentral](https://github.com/Ylianst/MeshCentral) project and is designed to be a simple management BASH script to manage connections to remote devices.
 
 ## meshaction.txt
-Every host on a MeshCentral system has a `meshaction.txt` file that's assigned to it. It's the hosts `meshaction.txt` files that will be used along with the `meshcmd` utility, both of which are available through the MeshCentral interface.
+Every device configured within a MeshCentral server has an associated `meshaction.txt` file and it's that file, along with the `meshcmd` utility, that will permit you to set up local ports on your workstation that will route traffic through to the remote device. Both the `meshaction.txt` and the `meshcmd` files are downloadable through the MeshCentral interface.
 
-There needs to be a separate connection file for each host/port combination that you want access to. Additionally, each connection file will use a unique local port.
+For each remote device/port combination, there needs to be a separate connection file which will be configured to use a unique local port on your workstation in order for you to access that remote device.
 
 ## Latest changes
 - Added MFA capability 
@@ -13,11 +13,11 @@ There needs to be a separate connection file for each host/port combination that
 - Process check when using `land`
 
 ## Suggested Approach
-1. Create a specific folder that will contain all your connection files. ~~For simplicity, also place the `meshcmd` executable into this same folder.~~
-1. Download the `meshaction.txt` file for that _specific_ host and place it into the folder that will contain all your connection files
-   1. Each host within MeshCentral uses a specific ID that's listed in its `meshaction.txt` file, so you can't use one and expect it to work for other hosts. 
-   1. That being said, you _can_ use the same file and edit it slightly to connect to the same remote host, just on a different port (see below).
-1. Edit the downloaded meshaction.txt as per the changes shown below:
+1. On your workstation, create a specific folder that will contain all your connection files. ~~For simplicity, also place the `meshcmd` executable into this same folder.~~ We'll call this folder the _"connection file folder_".
+1. Download the `meshaction.txt` file for a _specific_ host and place it into the _connection file folder_.
+   1. Each host within MeshCentral uses a specific ID that's listed in its `meshaction.txt` file, so you can't use one and expect it to work for _other_ hosts. 
+   1. That being said, you _can_ use the same file and edit it slightly to connect to the __same__ remote host, just on a __different__ port (this is explained below).
+1. Edit the downloaded meshaction.txt and make changes just to the entries  shown below:
     ```
     {
         "localPort": UNIQUE_LOCAL_PORT_NUMBER,
@@ -29,10 +29,10 @@ There needs to be a separate connection file for each host/port combination that
     ```
 1. Explanation of changes:
    1. `localPort`
-      1. the port that runs locally on your system that you'll point an application to, in order to route to a remote server. 
+      1. your workstation's local port that will route traffic through to a remote server. 
       1. takes an integer value, without surrounding quotes.
    1. `remotePort`
-      1. the port on the remote server that you want to (ultimately) connect to.
+      1. remote device port that you want to (ultimately) connect to.
       1. takes an integer value, without surrounding quotes.
    1. `remoteName`
       1. a description that will be shown on the review screen of the connection.
@@ -47,14 +47,57 @@ There needs to be a separate connection file for each host/port combination that
       1. **Note 1**: the password is optional at this point - if it's not provided the script below will prompt you for it before connecting. There are obvious security issues with either approach:
          1. Having the password in the .txt file makes it visible to anyone who has access to that file.
          1. Providing the password at the point of running the command will make that password visible by anyone running `ps -ef | grep meshcmd`
-1. Save the edited `meshaction.txt` as a different filename, **not** `meshaction.txt` (I use `Customer-Server-Port.txt`).
-   1. **Note 2**: for different connections to the _**same**_ host, you can now use the edited file as a template and just change the `localPort`, `remotePort` and `remoteName` (everything else stays the same)
-1. Use the attached `fly` and `land` scripts to connect and disconnect.
+1. __Rename__ the now edited `meshaction.txt` as a different filename, **not** `meshaction.txt` (I use `Customer-Device-Port.txt`).
+   1. **Note 2**: for different connections to the _**same**_ host, you can now use the edited file as a template and just change the `localPort`, `remotePort` and `remoteName` to point to a different port on the remote device. Everything else stays the same in the file. Keep saving the file (using different filenames) as you see fit.
+1. Use the attached `fly` and `land` scripts to connect and disconnect to the remote devices.
 
 ### Using the `fly` script
-Usage: ` fly connectionFile.txt`
+Usage: ` fly [ path/to/ ] connectionFile.txt`
 
-The `fly` script (which can be renamed to anything you choose!) is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
+The `fly` script is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
+
+Within the `fly` script you can edit the following parameters:
+
+---
+
+__`connectionsFolder`__ (optional, default = )
+
+The folder that contains all the connection files. When set, you can initiate `fly` with just the name of the connection file, as opposed to the full path to that connection file. The setting can either reference the absolute folder path, or relative to the `meshcmd` file:
+* `connectionsFolder=/home/dave/files/remoteDevices` (absolute referencing)
+* `connectionsFolder=./files/remoteDevices` (relative referencing)
+
+
+For example, assume the following folder structure:
+```
+├── home
+│   ├── dave
+│   │   ├── README.md
+│   │   ├── fly
+│   │   ├── land
+│   │   ├── meshcmd
+│   │   ├── files
+│   │   │   ├── remoteDevices
+│   │   │   │   ├── custabc-www-http.txt
+│   │   │   │   ├── custabc-www-ssh.txt
+│   │   │   │   ├── custabc-www-sql.txt
+```
+
+With `connectionsFolder` set to _an_empty_string_ (the default) then `fly` needs to be invoked as:
+* `fly /home/dave/files/remoteDevices/custabc-www-http.txt` (absolute), or
+* `fly ./files/remoteDevices/custabc-www-http.txt` (relative)
+   
+With `connectionsFolder` set to `'/home/dave/files/remoteDevices/'` (absolute) or `'./files/remoteDevices/` (relative) then `fly` can be invoked simply with:
+* `fly custabc-www-http.txt`
+
+---
+
+__`mfa`__ (optional, default = 0)
+    
+`mfa` takes an integer value and relates whether (`1`) or not (`0`) multi-factor authentication is enabled on the MeshCentral server. If set, `fly` will prompt the user for their MFA pin number in order to connect to Mesh Central and (ultimately) to the remote device. 
+
+__Note__ : At the moment this is a global setting. If enabled (`1`) it will assume that the user listed in the connection file has to provide a MFA PIN number. 
+
+---
 
 ### Using the `land` script
 Usage: ` land [ all | PIDNumber ]`

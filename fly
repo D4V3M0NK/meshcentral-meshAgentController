@@ -32,8 +32,8 @@ fi
 if [[ -f ${1} ]]; then
     sourceFile=${1}
 else
-    if [[ -f ./${connectionsFolder}/${1} ]]; then
-        sourceFile=./${connectionsFolder}/${1}
+    if [[ -f ${connectionsFolder}/${1} ]]; then
+        sourceFile=${connectionsFolder}/${1}
     else
         more ${connectionFile}
         echo -e "\nUnable to find connection file : ${1}\n"
