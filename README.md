@@ -174,9 +174,7 @@ Now let's disconnect from our RDP connection. From the list we can see that we'r
 
 ![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m3.png "Disconnect from RDP")
 
-We're back to a single connection. Let's close those connection down too:
-
-``` ./land 17588```
+We're back to a single connection. Let's close that connection down too: we can use either ` ./land 17588` or `./land all` (the latter will close this and all other connections, had we had any).
 
 ![](https://github.com/D4V3M0NK/meshcentral-meshAgentController/blob/master/img/m4.png "No more connections")
 
