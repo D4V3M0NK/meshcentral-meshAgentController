@@ -1,10 +1,20 @@
-# MeshAgent Controller
-This project is to be used in conjunction with the rather excellent [MeshCentral](https://github.com/Ylianst/MeshCentral) project and is designed to be a simple management BASH script to manage connections to remote devices.
+## The MeshAgent Router Controller
+The MeshAgent Router Controller ("MARC") is to be used in conjunction with the rather excellent [MeshCentral](https://github.com/Ylianst/MeshCentral) project and is designed to be a simple BASH script to manage one or more connections to remote devices configured to connect to MeshCentral.
 
-## meshaction.txt
-Every device configured within a MeshCentral server has an associated `meshaction.txt` file and it's that file, along with the `meshcmd` utility, that will permit you to set up local ports on your workstation that will route traffic through to the remote device. Both the `meshaction.txt` and the `meshcmd` files are downloadable through the MeshCentral interface.
+#### Requirements
+- MeshCentral 2.0 ("MC2") up and running
+- meshcmd (available from the MC2 interface)
+- meshaction.txt files (available from the MC2 interface)
 
-For each remote device/port combination, there needs to be a separate connection file which will be configured to use a unique local port on your workstation in order for you to access that remote device.
+##### meshcmd
+Known as the MeshCentral Router ([user guide](http://info.meshcentral.com/downloads/MeshCentral2/MeshCentral2RouterUserGuide-0.0.2.pdf)), the `meshcmd` utility is downloaded from the MeshCentral server, a link for which is included with every device that's listed on the server.  
+
+MARC is designed to work exclusively with the Linux command line utility: the Windows version of the utlity is self explanatory and works really well without additional assistance.
+
+##### meshaction.txt
+Every device configured to work with a MeshCentral server has an associated `meshaction.txt` file and it's that file, along with the `meshcmd` utility, that will permit you to set up local ports on your workstation that will route traffic through to the remote device. Both the `meshaction.txt` and the `meshcmd` files are downloadable through the MeshCentral web server, but once downloaded, you don't need to log into the web server for various tasks, they can all be managed through the router and MARC.
+
+For each remote device/port combination, there needs to be a separate connection file which will be configured to use a unique local port on your workstation in order for you to access that remote device. This is explained below.
 
 ## Latest changes
 - Added MFA capability 
@@ -27,7 +37,7 @@ For each remote device/port combination, there needs to be a separate connection
         "password": "YOUR_MESHCENTRAL_PASSWORD",
     }
     ```
-1. Explanation of changes:
+1. Explanation of changes required:
    1. `localPort`
       1. your workstation's local port that will route traffic through to a remote server. 
       1. takes an integer value, without surrounding quotes.
@@ -54,7 +64,7 @@ For each remote device/port combination, there needs to be a separate connection
 ### Using the `fly` script
 Usage: ` fly [ path/to/ ] connectionFile.txt`
 
-The `fly` script is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
+Placed within the same folder as the `meshcmd` executable, the `fly` script is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
 
 Within the `fly` script you can edit the following parameters:
 
@@ -62,7 +72,7 @@ Within the `fly` script you can edit the following parameters:
 
 __`connectionsFolder`__ (optional, default = )
 
-The folder that contains all the connection files. When set, you can initiate `fly` with just the name of the connection file, as opposed to the full path to that connection file. The setting can either reference the absolute folder path, or relative to the `meshcmd` file:
+The folder that contains all the connection files. When set, you can initiate `fly` with just the name of the connection file, as opposed to the full path to that connection file. The setting can either reference the absolute folder path, or relative folder path to the `meshcmd` file:
 * `connectionsFolder=/home/dave/files/remoteDevices` (absolute referencing)
 * `connectionsFolder=./files/remoteDevices` (relative referencing)
 
@@ -77,7 +87,7 @@ For example, assume the following folder structure:
 │   │   ├── meshcmd
 │   │   ├── files
 │   │   │   ├── remoteDevices
-│   │   │   │   ├── custabc-www-http.txt
+│   │   │   │   ├── custabc-www-http.txt   <-- connect to this host/port
 │   │   │   │   ├── custabc-www-ssh.txt
 │   │   │   │   ├── custabc-www-sql.txt
 ```
@@ -93,9 +103,9 @@ With `connectionsFolder` set to `'/home/dave/files/remoteDevices/'` (absolute) o
 
 __`mfa`__ (optional, default = 0)
     
-`mfa` takes an integer value and relates whether (`1`) or not (`0`) multi-factor authentication is enabled on the MeshCentral server. If set, `fly` will prompt the user for their MFA pin number in order to connect to Mesh Central and (ultimately) to the remote device. 
+`mfa` takes an integer value and relates whether (`mfa=1`) or not (`mfa=0`) multi-factor authentication is enabled on the MeshCentral server. If set, `fly` will prompt the user for their MFA pin number in order to connect to MeshCentral and (ultimately) to the remote device. 
 
-__Note__ : At the moment this is a global setting. If enabled (`1`) it will assume that the user listed in the connection file has to provide a MFA PIN number. 
+__Note__ : At the moment this is a global setting for MARC, irrespective of whether or not the user listed in the connection file has MFA enabled. If you have connection files for different users and some of those users have MFA enabled within MC2 and others haven't, it's best to set MARC's `mfa` setting to `1`: this means that it will prompt everyone for a PIN number, but MC2 users that aren't set up with MFA can enter any number, they'll be authenticated upon their username and password alone.
 
 ---
 
