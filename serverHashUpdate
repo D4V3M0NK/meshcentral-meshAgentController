@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Read the environment variable file
+if [[ -f ./.env ]]; then
+  . ./.env
+else
+  echo -e "\n\tPlease rename the .env_template file to just .env"
+  echo -e "\t(and edit as necessary)\n\n"
+  exit
+fi
+
+preReqs=(sed jq)
+toInstall=()
+for p in "${preReqs[@]}" ; do
+  a=$(which ${p})
+  if [[ -z ${a} ]]; then
+      toInstall+="${p} "
+  fi
+done
+
+if [[ ${#toInstall[@]} -gt 0 ]]; then
+  echo -e "\n\tThe following pre-requisities need to be installed"
+  for pre in ${toInstall[@]} ; do
+      echo -e "\t  *  ${pre}"
+  done
+  echo -e "\n\t(ie sudo apt install -y --no-install-recommends ${toInstall[@]})\n\n"
+  exit
+fi
+
+set -e
+now=$(date +%y%m%d"-"%H%M%S)
+#read -p "Location of connection files [./Connections]: " connFileLocation
+connFileLocation=${connectionsFolder:-"./"}
+
+echo -e "\n\tUsing connection file location: $connFileLocation"
+
+read -p '        Keep backup, even with no errors  (Y|N) [Y]: ' keepBackup
+keepBackup=${keepBackup:-Y}
+
+read -p '        New server hash: ' newServerHash
+
+
+echo -e "\n\tBacking up ${connFileLocation}"
+cp -r ${connFileLocation} ${connFileLocation}.${now}
+echo -e "\t  ... (OK)\n"
+
+echo -e "\n\tChecking ${connFileLocation} for files"
+connFileList=$(ls ${connFileLocation})
+
+for i in ${connFileList} ; do
+  echo "File: ${connFileLocation}/${i}"
+  hash=$(cat "${connFileLocation}/${i}" | jq -r ".serverHttpsHash")
+  echo -e "    Old server hash: ${hash}"
+  echo -e "    New server hash: ${newServerHash}\n"
+  sed -i "s/${hash}/${newServerHash}/" ${connFileLocation}/${i}
+done
+
+# if requested, delete the backup if all went OK
+if [[ "${keepBackup^^}" == "Y" ]]; then
+  echo -e "\n\t Keeping backup folder ${connFileLocation}.${now} in place"
+else
+  echo -e "\n\t Removing backup folder ${connFileLocation}.${now}"
+  rm -R ${connFileLocation}.${now}
+fi
+
+echo -e "\n\n"

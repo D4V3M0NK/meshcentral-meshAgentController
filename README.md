@@ -6,6 +6,7 @@ The MeshAgent Router Controller ("MARC") is to be used in conjunction with the r
 - meshcmd (available from the MC2 interface)
 - meshaction.txt files (available from the MC2 interface)
 - [jq](https://stedolan.github.io/jq/) (`apt install -y jq`)
+- sed (`apt install -y sed`)
 
 ##### meshcmd
 Known as the MeshCentral Router ([user guide](http://info.meshcentral.com/downloads/MeshCentral2/MeshCentral2RouterUserGuide-0.0.2.pdf)), the `meshcmd` utility is downloaded from the MeshCentral server, a link for which is included with every device that's listed on the server.  
@@ -21,8 +22,10 @@ For each remote device/port combination, there needs to be a separate connection
 Wonderfully powerful utility that enables command line utilities to parse JSON files.
 
 ## Latest changes
-- Added MFA capability 
+- server hash update utility
+- use of environment variable file
 ## Prior changes
+- Added MFA capability 
 - Ability to place connection files in their own folder
 - Process check when using `land`
 
@@ -184,3 +187,41 @@ We're back to a single connection. Let's close that connection down too: we can 
 
 No more connections.
 
+---
+
+### Using the `serverHashUpdate` script
+Usage: ` serverHashUpdate`
+If you're using Let's Encrypt (certbot) to maintain the TLS certificates on MC2, then those certificates will expire every 90 days. When they do, all of your connection files will need to be updated with a new hash in order for you to be able to connect. You'll probably not know about this (unless you're being notified by the Lets Encrypt registration site, or another method) until you _try_ connecting, to be told that `No or invalid "serverHttpsHash" specified.` It's at this point that you'll need to know the new server hash.
+
+At the moment, there's no automatic way of requesting the new server hash, therefore what you'll need to do is obtain a connection file directly from the MC2 server:
+
+1. Log into the MC2 server
+1. Select a remote server - don't connect to it, just select it
+   1. This will typically take you to the page that shows the 7 Day Power State of the remote server. 
+1. Just underneath the 7 Day Power State display, are two links:
+   1. Interface
+   1. __MeshCmd__ 
+1. Click on __MeshCmd__
+1. A window appears with a Operating System drop down list. Just ignore this, but click on the Action File link __MeshAction (.txt)__
+1. This downloads the current connection file for this server. It contains the current server hash.
+1. Open the __MeshAction.txt__ file
+1. Copy the `serverHttpsHash` value
+```
+{
+ ...
+ "serverHttpsHash": "835449528056555351754866525254754973759084877483788668887776737688527050537068655375878687887469",
+ ...
+}
+```
+
+The `serverHashUpdate` script is used to update all the connection files with a new server hash. It will backup all connection files (as a folder) before updating the files, allowing you to keep those backups afterwards (default).
+
+1. Run the `serverHashUpdate` script
+   1. The script shows (if set) the connection file location
+1. You're prompted as to whether or not you want to keep a backup of your existing configuration files folder (the default is "Y")
+1. Copy the new server hash (the `serverHttpsHash` as outlined above)
+1. The script runs through all the files, showing
+   1. The current file being updated
+   1. The old server hash
+   1. The new server hash
+1. The script finishes showing whether or not a backup was kept.

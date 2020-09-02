@@ -1,17 +1,15 @@
 #!/bin/bash
 
+# Read the environment variable file
+if [[ -f .env ]]; then
+  . ./.env
+else
+  echo -e "\n\tPlease rename the .env_template file to just .env"
+  echo -e "\t(and edit as necessary)\n\n"
+  exit
+fi
 
-###################
-##### OPTIONS #####
-###################
-# connectionsFolder pathToFolder
-#   can be set to an alternative folder that contains all individual remote server's meshaction files
-#   eg. connectionsFolder=/path/to/meshactionFiles
-connectionsFolder=
 
-# mfa [ 0 | 1 ]
-#   if your MeshCentral user has multi-factor authentication enabled, set to 1
-mfa=1
 
 
 

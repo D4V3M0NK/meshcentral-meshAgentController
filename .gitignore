@@ -1,4 +1,5 @@
 .idea/
-/Connections
+/Connections*
 /.connFile.txt
 /meshcmd
+.env
