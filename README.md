@@ -68,16 +68,14 @@ Wonderfully powerful utility that enables command line utilities to parse JSON f
    1. **Note 2**: for different connections to the _**same**_ host, you can now use the edited file as a template and just change the `localPort`, `remotePort` and `remoteName` to point to a different port on the remote device. Everything else stays the same in the file. Keep saving the file (using different filenames) as you see fit.
 1. Use the attached `fly` and `land` scripts to connect and disconnect to the remote devices.
 
-### Using the `fly` script
-Usage: ` fly [ path/to/ ] connectionFile.txt`
+### The environment variable file  `.env`
+From Sep 2, 2020, MARC uses an environment variable file named `.env` and is used by various scripts. The idea is to use the default `.env_template` file within this project, rename it to `.env`, edit it accordingly and save it in the same folder as the `fly`, `land`, `serverHttpHash` and other utilities that use it. 
 
-Placed within the same folder as the `meshcmd` executable, the `fly` script is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
-
-Within the `fly` script you can edit the following parameters:
+The options within the `.env` file that can be set, are outlined below.
 
 ---
 
-__`connectionsFolder`__ (optional, default = )
+__`connectionsFolder`__ (optional, default = BLANK)
 
 The folder that contains all the connection files. When set, you can initiate `fly` with just the name of the connection file, as opposed to the full path to that connection file. The setting can either reference the absolute folder path, or relative folder path to the `meshcmd` file:
 * `connectionsFolder=/home/dave/files/remoteDevices` (absolute referencing)
@@ -116,6 +114,15 @@ __Note__ : At the moment this is a global setting for MARC, irrespective of whet
 
 ---
 
+### Using the `fly` script
+Usage: ` fly [ path/to/ ] connectionFile.txt`
+
+Placed within the same folder as the `meshcmd` executable, the `fly` script is used to connect to a remote server. It will show you all the current connections, along with their PIDs that you've currently got running. (You'll need the PIDNumber to disconnect gracefully.)
+
+---
+
+
+
 ### Using the `land` script
 Usage: ` land [ all | PIDNumber ]`
 
@@ -136,8 +143,8 @@ Assume the following file for an HTTP connection to an example remote server:
 "remotePort": 80,
 "username": "meshcentral.userCredentials@example.org",
 "password": "SuperSecretPasswordGoesHere!",
-"serverId": "YRNC3498RYCN203487CG2N3F8C2G3NFC98GFCN3847FGN2C304H2CNO89WF9FWN4837FWGCN87FGC8F7GCN8F7CGWN87GNCW",
-"serverHttpsHash": "C2BYO59Y8XN2547HY27042G9C04G8CY4T7P0W9UHNWAC348YNC3X9M8Z398X4RNVL34NFWC98YNCO589YX98X-09UP03QJ0R",
+"serverId": "777989898049678376764981685781805666748049558985858353726883855678727273789072797881758576485565",
+"serverHttpsHash": "685467486957565180867055737551577774767588567054827973678373527888665085675589867078666657877477R",
 "debugLevel": 0,
 "serverUrl": "wss://remoteservices.example.org:443/meshrelay.ashx"
 }
@@ -154,8 +161,8 @@ We also need to connect to the same server, but with RDP, so we can copy `JohnDo
 "remotePort": 3389,
 "username": "meshcentral.userCredentials@example.org",
 "password": "SuperSecretPasswordGoesHere!",
-"serverId": "YRNC3498RYCN203487CG2N3F8C2G3NFC98GFCN3847FGN2C304H2CNO89WF9FWN4837FWGCN87FGC8F7GCN8F7CGWN87GNCW",
-"serverHttpsHash": "C2BYO59Y8XN2547HY27042G9C04G8CY4T7P0W9UHNWAC348YNC3X9M8Z398X4RNVL34NFWC98YNCO589YX98X-09UP03QJ0R",
+"serverId": "777989898049678376764981685781805666748049558985858353726883855678727273789072797881758576485565",
+"serverHttpsHash": "685467486957565180867055737551577774767588567054827973678373527888665085675589867078666657877477R",
 "debugLevel": 0,
 "serverUrl": "wss://remoteservices.example.org:443/meshrelay.ashx"
 }
