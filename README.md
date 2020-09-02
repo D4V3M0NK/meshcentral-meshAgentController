@@ -198,6 +198,7 @@ No more connections.
 
 ### Using the `serverHashUpdate` script
 Usage: ` serverHashUpdate`
+
 If you're using Let's Encrypt (certbot) to maintain the TLS certificates on MC2, then those certificates will expire every 90 days. When they do, all of your connection files will need to be updated with a new hash in order for you to be able to connect. You'll probably not know about this (unless you're being notified by the Lets Encrypt registration site, or another method) until you _try_ connecting, to be told that `No or invalid "serverHttpsHash" specified.` It's at this point that you'll need to know the new server hash.
 
 At the moment, there's no automatic way of requesting the new server hash, therefore what you'll need to do is obtain a connection file directly from the MC2 server:
